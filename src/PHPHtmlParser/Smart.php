@@ -56,7 +56,7 @@ class Smart
         $attribute = [];
         while ($this->length > $this->key) {
             $string .= $this->html[$this->key];
-            if (preg_match("/[A-Za-z\-]/", $string)) {
+            if (preg_match("/[A-Za-z\-\.]/", $string)) {
             } else {
                 if ($this->html[$this->key] === " ") {
                     if (in_array($string, $this->selfClosing)) {
