@@ -1,0 +1,26 @@
+{
+    "name": "puneetxp/php-html-parser",
+    "description": "php dependcies for The framework",
+    "type": "library",
+    "keywords": [
+        "html",
+        "dom",
+        "parser"
+    ],
+    "license": "Apache-2.0",
+    "autoload": {
+        "psr-4": {
+            "The\\PHPHtmlParser\\": "src/PHPHtmlParser"
+        }
+    },
+    "authors": [
+        {
+            "name": "Puneet Sharma",
+            "email": "puneetsharma9@hotmail.com"
+        }
+    ],
+    "minimum-stability": "RC",
+    "require": {
+        "php": ">=8.1"
+    }
+}
