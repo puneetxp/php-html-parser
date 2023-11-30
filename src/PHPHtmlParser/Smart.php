@@ -1,6 +1,7 @@
 <?php
 
 namespace The\PHPHtmlParser;
+
 class Smart
 {
     public array $tags = [];
@@ -26,7 +27,7 @@ class Smart
     ];
     public array $html;
     public string $active;
-    public function __construct(public string $htmlstring, public int $point = 0)
+    public function __construct(public string $htmlstring, public int $key = 0)
     {
         $this->html = str_split($htmlstring);
         $this->length = strlen($htmlstring);
@@ -35,83 +36,85 @@ class Smart
     public function parse()
     {
         $string = "";
-        foreach ($this->html as $key => $value) {
+        while ($this->length > $this->key) {
+            $string .= $value;
             if ($value == "<") {
-                if (preg_match("/[A-Za-z]/m", $this->html[$key + 1])) {
-                    $this->addtag($key);
+                if (preg_match("/[A-Za-z]/m", $this->html[$this->key + 1])) {
+                    $this->addtag();
                 }
                 continue;
             }
+            $this->key++;
         }
         return $this;
     }
 
-    public function addtag(int $key)
+    public function addtag()
     {
         $string = "";
-        $k = $key;
         $ture = true;
         $attribute = [];
-        while ( $this->length > $key) {
-            $string .= $this->html[$key];
-            print_r($string);
-            print_r("\n");
+        while ($this->length > $this->key) {
+            $string .= $this->html[$this->key];
             if (preg_match("/[A-Za-z\-]/", $string)) {
             } else {
-                if ($this->html[$key] === " ") {
+                if ($this->html[$this->key] === " ") {
                     if (in_array($string, $this->selfClosing)) {
-                        [$key, $attribute] = $this->addattribute($key + 1);
+                        $this->key++;
+                        [$this->key, $attribute] = $this->addattribute();
                         array_push($this->tags, ["tag" => $string, "closed" => true, "attribute" => $attribute]);
                     } else {
-                        [$key, $attribute] = $this->addattribute($key + 1);
+                        $this->key++;
+                        [$this->key, $attribute] = $this->addattribute();
                     }
-                } elseif ($this->html[$key] === "/>") {
+                } elseif ($this->html[$this->key] === "/>") {
                     array_push($this->tags, ["tag" => $string, "closed" => true, "attribute" => $attribute]);
                     $string = "";
-                } elseif ($this->html[$key] === ">") {
-                    $child = (new smart($this->htmlstring, $key + 1))->parse();
-                    $key = $child->point;
+                } elseif ($this->html[$this->key] === ">") {
+                    $this->key++;
+                    $child = (new smart($this->htmlstring, $this->key + 1))->parse();
+                    $this->key = $child->key;
                     $this->tags[count($this->tags) - 1]["childern"] = $child->tags;
-                } elseif ($this->html[$key] === "<") {
+                } elseif ($this->html[$this->key] === "<") {
                     $this->addstring($string);
                     $string = "";
                 }
                 // $tag = ["tag" => $string];
             }
-            $key++;
+            $this->key++;
         }
     }
-    public function addattribute(int $key)
+    public function addattribute()
     {
         $string = "";
         $attribute = [];
         $ture = true;
-        while ($ture && $this->length > $key) {
-            if (!$this->html[$key] = " ") {
+        while ($ture && $this->length > $this->key) {
+            if (!$this->html[$this->key] = " ") {
                 if (chop($string) !== "") {
                     $attribute[] = [$string => ["value" => "", "quote" => '']];
                 }
-            } elseif ($this->html[$key] = "=") {
+            } elseif ($this->html[$this->key] = "=") {
                 $value = "";
-                if ($this->html[$key + 1] == '"') {
-                    while ($this->html[$key] != '"') {
-                        $key++;
-                        $value .= $this->html[$key];
+                if ($this->html[$this->key + 1] == '"') {
+                    while ($this->html[$this->key] != '"') {
+                        $this->key++;
+                        $value .= $this->html[$this->key];
                     }
                     $attribute[] = [$string => ["value" => $value, "quote" => '"']];
-                } elseif ($this->html[$key + 1] == "'") {
-                    while ($this->html[$key] != "'") {
-                        $key++;
-                        $value .= $this->html[$key];
+                } elseif ($this->html[$this->key + 1] == "'") {
+                    while ($this->html[$this->key] != "'") {
+                        $this->key++;
+                        $value .= $this->html[$this->key];
                     }
                     $attribute[] = [$string => ["value" => $value, "quote" => "'"]];
                 } else {
                 }
             }
-            $string .= $this->html[$key];
-            $key++;
+            $string .= $this->html[$this->key];
+            $this->key++;
         }
-        return [$key, $attribute];
+        return [$this->key, $attribute];
     }
     public function addstring(string $string)
     {
