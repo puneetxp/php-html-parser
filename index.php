@@ -1,4 +1,5 @@
 <?php
+
 use The\PHPHtmlParser\Cleaner;
 use The\PHPHtmlParser\Smart;
 
@@ -7,13 +8,13 @@ include_once "./vendor/autoload.php";
 $string = '
 <t-l.base :title=$service["name"] :description=$service["seo_description"]>
     <app-service>
-        <header t-if="$condtion" class=' . "'flex px-0 text-white bg-mat_blue'" . '>
+        <header t-if="$condtion" class="flex px-0 text-white bg-mat_blue">
             <div class="grid w-full py-3">
                 <h1 class="pt-6 px-2 text-center">{{$service["name"]}} Compliances </h1>
                 <h2 class="text-center px-8 md:px-6">{{$service["name"]}} Compliances</h2>
                 <span class="flex justify-center pb-6">
                     <button mat-button=""
-                            onclick="document.getElementById("services").scrollIntoView({behavior: "smooth", block: "start", inline: "start"})"
+                            onclick=' . "'" . 'document.getElementById("services").scrollIntoView({behavior: "smooth", block: "start", inline: "start"})' . "'" . '
                             target="_blank" mat-raised-button=""
                             class="w-52 mdc-button mat-mdc-button mdc-button--raised mat-mdc-raised-button mat-unthemed mat-mdc-button-base"
                             mat-ripple-loader-class-name="mat-mdc-button-ripple">
@@ -37,10 +38,9 @@ $string = '
     var x= "";
 </script>';
 
-
 // echo $dom->loadStr($string);
 
 
 
-print_r((new Smart((new Cleaner())->clean($string)))->parse());
+print_r((new Smart((new Cleaner())->clean($string)))->parse()->tags);
 // echo (new Cleaner())->clean($string);
