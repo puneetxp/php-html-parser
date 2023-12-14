@@ -224,7 +224,7 @@ class Smart
     private function checktagisclose()
     {
         $x = ($this->html[$this->key] ?? "" . $this->html[$this->key + 1] ?? "" !== "</");
-        if (!$x && $this->activetag) {
+        if ($x && $this->activetag) {
             $this->activetag["status"] = "close";
         }
         return $x;
