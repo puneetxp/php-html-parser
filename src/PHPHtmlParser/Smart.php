@@ -58,6 +58,7 @@ class Smart
         if (isset($this->activetag["status"])) {
             print_r("isitclose");
             while (
+                isset($this->activetag) &&
                 $this->length > $this->key &&
                 $this->activetag["status"] !== "close"
             ) {
