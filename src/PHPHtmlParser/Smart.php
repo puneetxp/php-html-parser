@@ -84,7 +84,7 @@ class Smart
                     $this->closetag(true);
                 } elseif ($this->html[$this->key] === ">") {
                     $this->closetag();
-                    if ($this->activetag["status"] !== "closed") {
+                    if ($this->activetag["status"] !== "close") {
                         $this->next("xx");
                         $child = (new smart(key: $this->key, html: $this->html))->parse();
                         $this->next("child", key: $child->key);
@@ -99,7 +99,7 @@ class Smart
     {
         $attribute = "";
         $this->activetag["attribute"] = [];
-        while ($this->activetag && isset($this->activetag["status"]) && $this->activetag["status"] !== "open" && $this->activetag["status"] !== "closed") {
+        while ($this->activetag && isset($this->activetag["status"]) && $this->activetag["status"] !== "open" && $this->activetag["status"] !== "close") {
             if (!$this->checktagisopen()) {
                 if ($this->html[$this->key] == "=") {
                     $this->next("equal");
@@ -124,7 +124,7 @@ class Smart
                         }
                         $this->next();
                     } else {
-                        while ($this->html[$this->key] !== " " &&  $this->html[$this->key] !== ">" && $this->activetag["status"] !== "open" && $this->activetag["status"] !== "closed") {
+                        while ($this->html[$this->key] !== " " &&  $this->html[$this->key] !== ">" && $this->activetag["status"] !== "open" && $this->activetag["status"] !== "close") {
                             if (!$this->checktagisopen()) {
                                 $this->activetag["attribute"][$attribute]["value"] .=  $this->html[$this->key];
                             }
@@ -179,7 +179,8 @@ class Smart
                 //    $this->tags[] = $this->activetag;
                 //    $this->activetag = null;
                 // }
-                if ($this->activetag["status"] == "open") {
+                print_r($this->activetag);
+                if (isset($this->activetag["status"]) && $this->activetag["status"] == "open") {
                     $this->tags[] = $this->activetag;
                     $this->activetag = null;
                 } else {
@@ -223,7 +224,7 @@ class Smart
     private function checktagisclose()
     {
         $x = ($this->html[$this->key] ?? "" . $this->html[$this->key + 1] ?? "" !== "</");
-        if ($x) {
+        if (!$x && $this->activetag) {
             $this->activetag["status"] = "close";
         }
         return $x;
