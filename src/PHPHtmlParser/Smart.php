@@ -213,7 +213,7 @@ class Smart
         $x = ($this->html[$this->key] ?? "" . $this->html[$this->key + 1] ?? "") == "</";
 	if ($x) {
 		if($close){
-		
+	print_r($this->key);
 		}elseif (isset($this->activetag)) {
                 $key = $this->key;
                 $this->key += 2;
