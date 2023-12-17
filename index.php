@@ -26,7 +26,7 @@ $string = '
                     </button>
                     <p>
                     djfije
-                    <p>
+                    </p>
                 </span>
                 <h2 class="text-justify m-auto max-w-4xl px-4">{{$service["short_description"]}}</h2>
             </div>
@@ -42,5 +42,6 @@ $string = '
 
 
 
-print_r((new Smart((new Cleaner())->clean($string)))->parse()->tags);
+echo json_encode((new Smart((new Cleaner())->clean($string)))->parse()->tags);
+
 // echo (new Cleaner())->clean($string);

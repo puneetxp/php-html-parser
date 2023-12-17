@@ -45,26 +45,18 @@ class Smart
         $string = "";
         while (
             $this->length > $this->key &&
-            $this->checktagisclose()
+            $this->checktagisclose($string)
         ) {
             if ($this->checktagisopen()) {
-                $this->next();
+                $this->next("checkitisopen");
                 $this->checktag();
             } else {
                 $string .= $this->html[$this->key];
-                $this->next();
+                $this->next($string);
             }
         }
         if (isset($this->activetag["status"])) {
-            print_r("isitclose");
-            while (
-                isset($this->activetag) &&
-                $this->length > $this->key &&
-                $this->activetag["status"] !== "close"
-            ) {
-                $this->closetag(true);
-                $this->next("scam");
-            }
+            $this->closetag(true);
         }
         return $this;
     }
@@ -76,7 +68,7 @@ class Smart
             $this->next();
         }
         $this->activetag["status"] = "pending";
-        while ($this->activetag && isset($this->activetag["status"]) && ($this->activetag["status"] == "open" || $this->activetag["status"] == "pending") && $this->checktagisclose()) {
+        while ($this->length > $this->key && $this->activetag && isset($this->activetag["status"]) && ($this->activetag["status"] == "open" || $this->activetag["status"] == "pending") && $this->checktagisclose()) {
             if (!$this->checktagisopen()) {
                 if ($this->html[$this->key] === " ") {
                     $this->next();
@@ -89,7 +81,7 @@ class Smart
                         $this->next("xx");
                         $child = (new smart(key: $this->key, html: $this->html))->parse();
                         $this->next("child", key: $child->key);
-                        $this->activetag["childern"][] = $child->tags;
+                        $this->activetag["childern"] = [...$this->activetag["childern"] ?? [], ...$child->tags];
                     }
                 }
             }
@@ -222,12 +214,25 @@ class Smart
             $this->activetag["status"] = "open";
         }
     }
-    private function checktagisclose()
+    private function checktagisclose($string = null)
     {
-        $x = ($this->html[$this->key] ?? "" . $this->html[$this->key + 1] ?? "" !== "</");
-        if ($x && $this->activetag) {
-            $this->activetag["status"] = "close";
+        $x = ($this->html[$this->key] ?? "" . $this->html[$this->key + 1] ?? "") == "</";
+        if ($x) {
+            if (isset($this->activetag)) {
+                $key = $this->key;
+                $this->key += 2;
+                while ($this->length > $this->key && $this->html[$this->key] !== ">") {
+                    $this->next();
+                }
+                $this->next();
+                print_r($this->activetag);
+                $this->closetag(true);
+            } else {
+                if ($string) {
+                    $this->addstring($string);
+                }
+            }
         }
-        return $x;
+        return !$x;
     }
 }
