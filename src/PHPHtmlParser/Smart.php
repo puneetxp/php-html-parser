@@ -45,7 +45,7 @@ class Smart
         $string = "";
         while (
             $this->length > $this->key &&
-            $this->checktagisclose($string)
+            $this->checktagisclose(true,$string)
         ) {
             if ($this->checktagisopen()) {
                 $this->next("checkitisopen");
@@ -105,7 +105,6 @@ class Smart
                                 $this->activetag["attribute"][$attribute]["value"] .= $this->html[$this->key];
                                 $this->next();
                             }
-                            print_r($this->activetag);
                         } elseif ($this->html[$this->key] == "'") {
                             $this->next();
                             $this->activetag["attribute"][$attribute]["quote"] = "'";
@@ -113,7 +112,6 @@ class Smart
                                 $this->activetag["attribute"][$attribute]["value"] .=  $this->html[$this->key];
                                 $this->next();
                             }
-                            print_r($this->activetag);
                         }
                         $this->next();
                     } else {
@@ -123,7 +121,6 @@ class Smart
                             }
                             $this->next();
                         }
-                        print_r($this->activetag);
                     }
                     $attribute = "";
                 } elseif ($this->html[$this->key] == " ") {
@@ -153,7 +150,6 @@ class Smart
 
     private function tagtostring(string $addtionalstring = "")
     {
-        print_r($this->activetag);
         if ($this->activetag) {
             $string = $this->activetag["tag"] && "";
             foreach ($this->activetag["attribute"] ?? [] as $value) {
@@ -172,7 +168,6 @@ class Smart
                 //    $this->tags[] = $this->activetag;
                 //    $this->activetag = null;
                 // }
-                print_r($this->activetag);
                 if (isset($this->activetag["status"]) && $this->activetag["status"] == "open") {
                     $this->tags[] = $this->activetag;
                     $this->activetag = null;
@@ -203,7 +198,6 @@ class Smart
 
     private function closetag(bool $bool = false, string $print = null)
     {
-        print_r($this->activetag);
         if ($print) {
             print_r($print);
         }
@@ -214,18 +208,21 @@ class Smart
             $this->activetag["status"] = "open";
         }
     }
-    private function checktagisclose($string = null)
+    private function checktagisclose($close=false, $string = null)
     {
         $x = ($this->html[$this->key] ?? "" . $this->html[$this->key + 1] ?? "") == "</";
-        if ($x) {
-            if (isset($this->activetag)) {
+	if ($x) {
+		if($close){
+		
+		}elseif (isset($this->activetag)) {
                 $key = $this->key;
                 $this->key += 2;
-                while ($this->length > $this->key && $this->html[$this->key] !== ">") {
+		$string ="";
+		while ($this->length > $this->key && $this->html[$this->key] !== ">") {
+		    $string .= $this->html[$this->key];
                     $this->next();
                 }
                 $this->next();
-                print_r($this->activetag);
                 $this->closetag(true);
             } else {
                 if ($string) {
