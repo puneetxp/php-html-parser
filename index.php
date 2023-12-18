@@ -42,6 +42,6 @@ $string = '
 
 
 
-print_r((new Smart((new Cleaner())->clean($string)))->parse()->tags);
+echo json_encode((new Smart((new Cleaner())->clean($string)))->parse()->tags);
 
 // echo (new Cleaner())->clean($string);

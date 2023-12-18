@@ -210,8 +210,12 @@ class Smart
     }
     private function checktagisclose($close=false, $string = null)
     {
-        $x = ($this->html[$this->key] ?? "" . $this->html[$this->key + 1] ?? "") == "</";
+	    print_r($this->key);	
+	    $end = $this->html[$this->key] . $this->html[$this->key + 1] ?? "";
+	    print_r($end."\n");
+$x = $end =="</";
 	if ($x) {
+		print_r($end);
 		if($close){
 	print_r($this->key);
 		}elseif (isset($this->activetag)) {
