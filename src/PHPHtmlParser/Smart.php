@@ -215,6 +215,9 @@ class Smart
 $x = $end =="</";
 	if ($x) {
 		if($close){
+			if(chop($string)!=""){
+				$this->addstring($string);
+			}
 	print_r($this->key);
 		}elseif (isset($this->activetag)) {
                 $key = $this->key;
@@ -229,10 +232,8 @@ $x = $end =="</";
 
                 $this->next();
                 $this->closetag(true);
-            } else {
-                if ($string) {
-                    $this->addstring($string);
-                }
+            } else {if(chop($string)!=""){                                          $this->addstring($string);
+                        }
             }
         }
         return !$x;
