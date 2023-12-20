@@ -1,7 +1,6 @@
 <?php
 
-use The\PHPHtmlParser\Cleaner;
-use The\PHPHtmlParser\Smart;
+use The\htmlParser;
 
 include_once "./vendor/autoload.php";
 
@@ -26,13 +25,12 @@ $string = '
                     </button>
                     <p>
                     djfije
-                    </p>
                 </span>
                 <h2 class="text-justify m-auto max-w-4xl px-4">{{$service["short_description"]}}</h2>
             </div>
-            <div>
         </header>
     </app-service>
+    <t-b-base>
 </t-l.base>
 <script>
     var x= "";
@@ -41,7 +39,8 @@ $string = '
 // echo $dom->loadStr($string);
 
 
-
-echo json_encode((new Smart((new Cleaner())->clean($string)))->parse()->tags);
+$r = (new htmlParser(str_replace(["\n", "\r\n", "\r", "\t"], '', $string)))->parse();
+print_r($r->tags);
+echo $r->tostring();
 
 // echo (new Cleaner())->clean($string);
